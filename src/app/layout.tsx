@@ -4,6 +4,7 @@ import {ConvexClientProvider} from "@/providers/convex-client-provider"
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 
 import "./globals.css";
+import { Toaster } from "sonner";
 
 
 const geistSans = Geist({
@@ -34,6 +35,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <ConvexClientProvider>
+          <Toaster/>
           {children}
           </ConvexClientProvider></body>
     </html>
