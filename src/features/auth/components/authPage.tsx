@@ -14,8 +14,7 @@ export default function AuthPage() {
         {state === "login" ? (
           <LoginCard onSwitchToRegister={() => setState("register")} />
         ) : (
-          // <RegisterCard onSwitchToLogin={() => setState("login")} />
-          <p>hii</p>
+          <RegisterCard onSwitchToLogin={() => setState("login")} />
         )}
       </div>
     </div>

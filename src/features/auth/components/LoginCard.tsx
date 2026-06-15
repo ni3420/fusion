@@ -9,6 +9,8 @@ import { Loader2, Eye, EyeOff, ShieldCheck } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,7 +32,6 @@ export default function LoginCard({ onSwitchToRegister }: LoginCardProps) {
   const searchParams = useSearchParams();
   const [isPending, setIsPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const redirectUrl = searchParams.get("redirect") || "/";
 
@@ -48,17 +49,17 @@ export default function LoginCard({ onSwitchToRegister }: LoginCardProps) {
 
   const onSubmit = async (data: LoginFormValues) => {
     setIsPending(true);
-    setError(null);
     try {
       await signIn("password", { 
         email: data.email, 
         password: data.password, 
         flow: "signIn" 
       });
-    //   window.location.href = redirectUrl;
+      toast.success("Welcome back! Authentication successful.");
+      // window.location.href = redirectUrl;
     } catch (err) {
       console.error(err);
-      setError("Invalid email or password");
+      toast.error("Invalid email or password. Please try again.");
     } finally {
       setIsPending(false);
     }
@@ -66,12 +67,12 @@ export default function LoginCard({ onSwitchToRegister }: LoginCardProps) {
 
   const handleOAuthLogin = async (provider: "google" | "github") => {
     setIsPending(true);
-    setError(null);
     try {
+      toast.loading(`Redirecting to ${provider === "google" ? "Google" : "GitHub"}...`);
       await signIn(provider, { redirectTo: redirectUrl });
     } catch (err) {
       console.error(err);
-      setError(`Failed to sign in with ${provider}`);
+      toast.error(`Failed to sign in with ${provider}`);
       setIsPending(false);
     }
   };
@@ -88,12 +89,6 @@ export default function LoginCard({ onSwitchToRegister }: LoginCardProps) {
       </CardHeader>
       
       <CardContent className="grid gap-4 px-6">
-        {error && (
-          <div className="p-3 text-xs font-medium text-red-500 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 rounded-lg">
-            {error}
-          </div>
-        )}
-
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
           <div className="grid gap-1.5">
             <Label htmlFor="email" className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
