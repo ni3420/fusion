@@ -23,7 +23,7 @@ const WorkSpacesLayout = ({ children }: WorkSpacesProps) => {
               </div>
             </ResizablePanel>
             <ResizableHandle withHandle />
-            <ResizablePanel >
+            <ResizablePanel defaultSize={600}>
               <div className="h-full bg-white dark:bg-neutral-900 overflow-y-auto">
                 {children}
               </div>

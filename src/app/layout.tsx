@@ -5,6 +5,8 @@ import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 
 import "./globals.css";
 import { Toaster } from "sonner";
+import CreateChannelModal from "@/features/channels/components/create-channel-model";
+import InviteCard from "@/features/workspaces/components/workspace-invite-card";
 
 
 const geistSans = Geist({
@@ -36,6 +38,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <ConvexClientProvider>
           <Toaster/>
+          <CreateChannelModal/>
           {children}
           </ConvexClientProvider></body>
     </html>
