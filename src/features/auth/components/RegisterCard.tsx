@@ -106,7 +106,7 @@ export default function RegisterCard({ onSwitchToLogin }: RegisterCardProps) {
             <Input
               id="name"
               type="text"
-              placeholder="Nitin Saini"
+              placeholder="john Saini"
               disabled={isPending}
               className="h-10 border-neutral-200 dark:border-neutral-800 bg-transparent focus-visible:ring-neutral-400"
               {...register("name")}
