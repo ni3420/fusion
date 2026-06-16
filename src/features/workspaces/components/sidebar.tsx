@@ -6,6 +6,7 @@ import { useMemo } from "react";
 import { FiHome, FiMessageSquare, FiBell, FiGrid, FiEdit3 } from "react-icons/fi";
 import WorkSpaceSwitcher from "./workspace-switcher";
 import UserButton from "@/features/auth/components/user-button";
+import SideBarItem from "./sidebar-items";
 
 export default function SideBar() {
   const pathname = usePathname();
@@ -57,7 +58,6 @@ export default function SideBar() {
           })}
         </nav>
       </div>
-
       <div className="flex flex-col items-center gap-y-6 w-full px-2.5">
         <button
           className="w-14 h-14 rounded-xl bg-neutral-900 text-neutral-50 dark:bg-neutral-50 dark:text-neutral-950 hover:bg-neutral-800 dark:hover:bg-neutral-200 shadow-sm transition-all duration-200 active:scale-95 flex items-center justify-center outline-none group"
