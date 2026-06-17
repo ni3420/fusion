@@ -37,7 +37,7 @@ export default function SideBarItem({
 
   return (
     <Link 
-      href={`/workspace/${workspaceId}/channels/${id}`}
+      href={`/workspaces/${workspaceId}/channels/${id}`}
       className={cn(sidebarItemVariants({ variant }))}
     >
       <Icon className={cn(

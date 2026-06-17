@@ -89,7 +89,7 @@ export default function WorkSpaceSideBar() {
             return (
               <Link
                 key={member._id}
-                href={`/workspace/${workspaceId}/member/${member._id}`}
+                href={`/workspaces/${workspaceId}/member/${member._id}`}
                 className={cn(
                   "flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-tight transition-all group",
                   isActive
