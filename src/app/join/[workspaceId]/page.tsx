@@ -7,14 +7,17 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useJoinWorkspace } from "@/features/workspaces/api/use-join";
+import { Id } from "../../../../convex/_generated/dataModel";
 
 export default function JoinPage() {
   const router = useRouter();
   const params = useParams();
-  const workspaceId = params.workspaceId as string;
+  const workspaceId = params.workspaceId as Id<"workspaces">;
+
+  const { mutate, isPending } = useJoinWorkspace();
 
   const [code, setCode] = useState<string[]>(new Array(6).fill(""));
-  const [isPending, setIsPending] = useState(false);
   const inputRefs = useRef<HTMLInputElement[]>([]);
 
   useEffect(() => {
@@ -37,8 +40,6 @@ export default function JoinPage() {
     }
   };
 
-  
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
     if (e.key === "Backspace" && !code[index] && index > 0 && inputRefs.current[index - 1]) {
       inputRefs.current[index - 1].focus();
@@ -59,25 +60,27 @@ export default function JoinPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const fullCode = code.join("");
-    console.log(fullCode)
 
     if (fullCode.length !== 6) {
       toast.error("Please enter a complete 6-digit access token.");
       return;
     }
 
-    try {
-      setIsPending(true);
-      
-
-      toast.success("Workspace access clearance authorized!");
-      router.push(`/workspaces/${workspaceId}`);
-    } catch (error) {
-      console.error(error);
-      toast.error("Invalid workspace join parameters or token expired.");
-    } finally {
-      setIsPending(false);
-    }
+    await mutate(
+      {
+        workspaceId,
+        joinCode: fullCode,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Workspace access clearance authorized!");
+          router.push(`/workspaces/${workspaceId}`);
+        },
+        onError: () => {
+          toast.error("Invalid workspace join parameters or token expired.");
+        },
+      }
+    );
   };
 
   return (
