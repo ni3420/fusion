@@ -64,10 +64,10 @@ export default function CreateChannelModal() {
         workspaceId,
       },
       {
-        onSuccess: (channelId) => {
+        onSuccess: () => {
           toast.success("Communication channel initialized successfully!");
           handleClose();
-          router.push(`/workspace/${workspaceId}/channels/${channelId}`);
+          // router.push(`/workspaces/${workspaceId}/channels/${channelId}`);
         },
         onError: () => {
           toast.error("Failed to compile and create target channel route.");
