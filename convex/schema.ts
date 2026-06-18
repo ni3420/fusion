@@ -25,7 +25,46 @@ const schema = defineSchema({
     workspaceId:v.id("workspaces"),
     userId:v.id("users")
   })
-  .index("by_workspace_id",["workspaceId"])
+  .index("by_workspace_id",["workspaceId"]),
+  
+  messages: defineTable({
+    body: v.string(),
+    image: v.optional(v.id("_storage")),
+    gifUrl: v.optional(v.string()),
+    memberId: v.id("members"),
+    workspaceId: v.id("workspaces"),
+    channelId: v.optional(v.id("channels")),
+    parentMessageId: v.optional(v.id("messages")),
+    updatedAt: v.optional(v.number()),
+  })
+    .index("by_workspace_id", ["workspaceId"])
+    .index("by_channel_id", ["channelId"])
+    .index("by_parent_message_id", ["parentMessageId"])
+    .index("by_member_id", ["memberId"]),
+
+   comments: defineTable({
+    body: v.string(),
+    messageId: v.id("messages"),
+    memberId: v.id("members"),
+    workspaceId: v.id("workspaces"),
+    updatedAt: v.optional(v.number()),
+  })
+    .index("by_message_id", ["messageId"])
+    .index("by_workspace_id", ["workspaceId"])
+    .index("by_member_id", ["memberId"]),
+
+  reactions: defineTable({
+    value: v.string(),
+    messageId: v.id("messages"),
+    memberId: v.id("members"),
+    workspaceId: v.id("workspaces"),
+  })
+    .index("by_message_id", ["messageId"])
+    .index("by_workspace_id", ["workspaceId"])
+    .index("by_member_id", ["memberId"])
+    .index("by_message_id_member_id_value", ["messageId", "memberId", "value"]),
+
+
   // Your other tables...
 });
  
