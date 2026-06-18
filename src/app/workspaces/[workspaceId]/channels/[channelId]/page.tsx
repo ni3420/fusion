@@ -97,7 +97,6 @@ export default function ChannelPage() {
 
   return (
     <div className="h-full flex-1 flex flex-col bg-white dark:bg-neutral-900">
-      <ChannelHeader name={channel.name} channelId={channelId} isAdmin={true} />
 
       <MessageFeed
         messages={messages}

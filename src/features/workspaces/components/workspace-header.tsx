@@ -22,7 +22,7 @@ interface WorkspaceHeaderProps {
   workspace: {
     name: string;
     isAdmin: boolean;
-    joinCode: string; // Added to supply your invite card with its required parameter
+    joinCode: string; 
   };
 }
 
@@ -30,10 +30,9 @@ export default function WorkspaceHeader({ workspace }: WorkspaceHeaderProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [preferencesOpen, setPreferencesOpen] = useState(false);
   const [inviteOpen, setInviteOpen] = useState(false); // Controls the invite dialog view
-  const [, setIsOpen] = useMobileSidebar();
 
   const workspaceId = useGetWorkSpaceId(); 
-const { mutate, isPending } = useResetJoinCode();
+const { mutate} = useResetJoinCode();
 
 const handleResetInviteCode = async () => {
   await mutate(
@@ -55,14 +54,14 @@ const handleResetInviteCode = async () => {
     <>
       <div className="flex items-center justify-between h-14 px-4 border-b border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-neutral-900 shrink-0 select-none">
         <div className="flex items-center gap-1.5 min-w-0">
-          <Button
+          {/* <Button
             variant="ghost"
             size="icon"
             onClick={() => setIsOpen(true)}
             className="md:hidden h-8 w-8 text-neutral-600 dark:text-neutral-400 shrink-0"
           >
             <Menu className="h-5 w-5" />
-          </Button>
+          </Button> */}
 
           <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
             <DropdownMenuTrigger asChild>

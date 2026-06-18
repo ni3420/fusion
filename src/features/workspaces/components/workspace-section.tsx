@@ -42,10 +42,10 @@ export default function WorkspaceSection({
         {onNew && (
           <Hint label={hint} side="top" align="center">
             <Button
-              onClick={onNew} // FIXED: Clicks are cleanly handled on the button container now
+              onClick={onNew}
               variant="ghost"
               size="icon"
-              className="opacity-0 group-hover:opacity-100 h-5 w-5 rounded-md text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-100 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 transition-all ml-auto"
+              className="h-5 w-5 rounded-md text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-100 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 transition-all ml-auto"
             >
               <Plus className="h-3.5 w-3.5" />
             </Button>
