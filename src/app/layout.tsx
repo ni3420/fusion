@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Aura Platform",
+  title: "Fusion",
   description: "Next-generation team collaboration platform.",
 };
 
