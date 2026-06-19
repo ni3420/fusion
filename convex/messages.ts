@@ -87,10 +87,11 @@ const populateFullMessage = async (ctx: QueryCtx, message: Doc<"messages">) => {
 export const create = mutation({
   args: {
     body: v.string(),
-    image: v.optional(v.string()),
+    image: v.optional(v.union(v.id("_storage"), v.string())),
     gifUrl: v.optional(v.string()),
     workspaceId: v.id("workspaces"),
     channelId: v.optional(v.id("channels")),
+    conversationId: v.optional(v.id("conversations")),
     parentMessageId: v.optional(v.id("messages")),
   },
   handler: async (ctx, args) => {
@@ -113,6 +114,7 @@ export const create = mutation({
       memberId: member._id,
       workspaceId: args.workspaceId,
       channelId: args.channelId,
+      conversationId: args.conversationId,
       parentMessageId: args.parentMessageId,
     });
 
@@ -123,6 +125,7 @@ export const create = mutation({
 export const get = query({
   args: {
     channelId: v.optional(v.id("channels")),
+    conversationId: v.optional(v.id("conversations")),
     parentMessageId: v.optional(v.id("messages")),
     paginationOpts: paginationOptsValidator,
   },
@@ -138,6 +141,12 @@ export const get = query({
         .withIndex("by_parent_message_id", (q) => q.eq("parentMessageId", args.parentMessageId))
         .order("desc")
         .paginate(args.paginationOpts);
+    } else if (args.conversationId) {
+      results = await ctx.db
+        .query("messages")
+        .withIndex("by_conversation_id", (q) => q.eq("conversationId", args.conversationId))
+        .order("desc")
+        .paginate(args.paginationOpts);
     } else if (args.channelId) {
       results = await ctx.db
         .query("messages")
@@ -145,7 +154,12 @@ export const get = query({
         .order("desc")
         .paginate(args.paginationOpts);
     } else {
-      throw new Error("Missing query context filter requirements");
+      // Return a graceful layout response to mitigate early loading state filter crashes
+      return {
+        page: [],
+        isDone: true,
+        continueCursor: "",
+      };
     }
 
     const page = await Promise.all(
@@ -156,6 +170,30 @@ export const get = query({
       ...results,
       page: page.filter(Boolean),
     };
+  },
+});
+
+export const getMessageById = query({
+  args: {
+    id: v.id("messages"),
+  },
+  handler: async (ctx, args) => {
+    const userId = await auth.getUserId(ctx);
+    if (!userId) return null;
+
+    const message = await ctx.db.get(args.id);
+    if (!message) return null;
+
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", message.workspaceId).eq("userId", userId)
+      )
+      .unique();
+
+    if (!member) return null;
+
+    return await populateFullMessage(ctx, message);
   },
 });
 
@@ -215,9 +253,28 @@ export const remove = mutation({
       .withIndex("by_parent_message_id", (q) => q.eq("parentMessageId", args.id))
       .collect();
 
-    await Promise.all(replies.map((reply) => ctx.db.delete(reply._id)));
-    await ctx.db.delete(args.id);
+    await Promise.all(
+      replies.map(async (reply) => {
+        if (reply.image) {
+          try {
+            await ctx.storage.delete(reply.image as Id<"_storage">);
+          } catch (e) {
+            console.error("Failed to purge reply asset context structure", e);
+          }
+        }
+        await ctx.db.delete(reply._id);
+      })
+    );
 
+    if (message.image) {
+      try {
+        await ctx.storage.delete(message.image as Id<"_storage">);
+      } catch (e) {
+        console.error("Failed to purge parent asset entity", e);
+      }
+    }
+
+    await ctx.db.delete(args.id);
     return args.id;
   },
 });

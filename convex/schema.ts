@@ -29,19 +29,27 @@ const schema = defineSchema({
   
   messages: defineTable({
     body: v.string(),
-    image: v.optional(v.id("_storage")),
+    image: v.optional(v.union(v.id("_storage"), v.string())),
     gifUrl: v.optional(v.string()),
     memberId: v.id("members"),
     workspaceId: v.id("workspaces"),
     channelId: v.optional(v.id("channels")),
+    conversationId: v.optional(v.id("conversations")),
     parentMessageId: v.optional(v.id("messages")),
     updatedAt: v.optional(v.number()),
   })
     .index("by_workspace_id", ["workspaceId"])
+    .index("by_conversation_id", ["conversationId"])
     .index("by_channel_id", ["channelId"])
     .index("by_parent_message_id", ["parentMessageId"])
     .index("by_member_id", ["memberId"]),
-
+    conversations: defineTable({
+    workspaceId: v.id("workspaces"),
+    memberOneId: v.id("members"),
+    memberTwoId: v.id("members"),
+  })
+    .index("by_workspace_id", ["workspaceId"])
+    .index("by_workspace_id_members", ["workspaceId", "memberOneId", "memberTwoId"]),
    comments: defineTable({
     body: v.string(),
     messageId: v.id("messages"),
@@ -63,6 +71,16 @@ const schema = defineSchema({
     .index("by_workspace_id", ["workspaceId"])
     .index("by_member_id", ["memberId"])
     .index("by_message_id_member_id_value", ["messageId", "memberId", "value"]),
+threads: defineTable({
+    parentMessageId: v.id("messages"),
+    workspaceId: v.id("workspaces"),
+    channelId: v.id("channels"),
+    replyCount: v.number(),
+    lastReplyAt: v.optional(v.number()),
+  })
+    .index("by_parent_message_id", ["parentMessageId"])
+    .index("by_workspace_id", ["workspaceId"])
+    .index("by_workspace_parent_message", ["workspaceId", "parentMessageId"]),
 
 
   // Your other tables...

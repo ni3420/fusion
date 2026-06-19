@@ -14,6 +14,7 @@ import MessageFeed from "@/features/messages/components/message-feed";
 import Editor, { EditorValue } from "@/components/editor";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useToggleReaction } from "@/features/reactions/api/use-toggle-reaction";
 
 export default function ChannelPage() {
   const params = useParams();
@@ -26,6 +27,7 @@ export default function ChannelPage() {
   const { results: messages, status, loadMore, canLoadMore } = useGetMessages({ channelId });
   const { mutate: createMessage, isPending: isSending } = useCreateMessage();
   const { mutate: generateUploadUrl } = useGenerateUploadUrl();
+  const {mutate:reaction}=useToggleReaction()
 
   const handleMessageSubmit = async ({ body, image, gifUrl }: EditorValue & { image?: File | null }) => {
     try {

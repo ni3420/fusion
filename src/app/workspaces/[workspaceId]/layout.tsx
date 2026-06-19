@@ -7,6 +7,9 @@ import WorkSpaceSideBar from "@/features/workspaces/components/workspace-sidebar
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { usePanel } from "@/features/messages/hooks/use-panel";
+import ThreadPanel from "@/features/thread/components/thread-panel";
+import { Id } from "../../../../convex/_generated/dataModel";
 
 interface WorkSpacesProps {
   children: React.ReactNode;
@@ -15,27 +18,28 @@ interface WorkSpacesProps {
 const WorkSpacesLayout = ({ children }: WorkSpacesProps) => {
   const params = useParams();
   const [isMounted, setIsMounted] = useState(false);
+  const { parentMessageId, closePanel } = usePanel();
+useEffect(() => {
+  const timer = setTimeout(() => {
+    setIsMounted(true);
+  }, 1000);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsMounted(true);
-    }, 0);
-
-    return () => clearTimeout(timer);
-  }, []);
+  return () => {
+    clearTimeout(timer);
+  };
+}, []);
 
   const hasActiveConversation = !!(params?.channelId || params?.memberId);
+  const showPanel = !!parentMessageId;
 
   if (!isMounted) {
     return (
       <div className="h-screen w-screen flex flex-col overflow-hidden bg-background text-foreground antialiased">
-        {/* Top Navbar Area Mock */}
         <div className="h-10 border-b border-border/40 w-full flex items-center px-4 bg-background justify-center">
           <Skeleton className="h-6 w-[400px] rounded-md" />
         </div>
         
         <div className="flex flex-1 w-full overflow-hidden">
-          {/* Static Sidebar Mock Column */}
           <div className="hidden md:flex w-[84px] h-full bg-background border-r border-border/40 flex-col items-center py-6 gap-y-6 shrink-0">
             <Skeleton className="w-14 h-14 rounded-xl" />
             <Skeleton className="w-10 h-10 rounded-lg" />
@@ -43,7 +47,6 @@ const WorkSpacesLayout = ({ children }: WorkSpacesProps) => {
             <Skeleton className="w-10 h-10 rounded-lg" />
           </div>
 
-          {/* Sub Workspace Nav Panel Area Mock */}
           <div className="hidden md:flex w-[260px] h-full bg-background border-r border-border/40 p-4 flex-col gap-y-4 shrink-0">
             <div className="flex items-center justify-between mb-4">
               <Skeleton className="w-32 h-5 rounded" />
@@ -58,7 +61,6 @@ const WorkSpacesLayout = ({ children }: WorkSpacesProps) => {
             <Skeleton className="w-4/5 h-4 rounded" />
           </div>
 
-          {/* Core Right Main Context Area Panel Mock */}
           <div className="flex-1 h-full bg-background p-6 flex flex-col gap-y-4 justify-between">
             <div className="flex items-center justify-between border-b border-border/40 pb-4">
               <Skeleton className="w-48 h-6 rounded" />
@@ -93,8 +95,8 @@ const WorkSpacesLayout = ({ children }: WorkSpacesProps) => {
 
       <div className="flex flex-1 w-full overflow-hidden relative">
         
-        {/* MOBILE VIEW NAVIGATION LOGIC */}
-        <div className="flex flex-1 w-full md:hidden overflow-hidden bg-background">
+        {/* MOBILE VIEW NAVIGATION AND PANEL LOGIC */}
+        <div className="flex flex-1 w-full md:hidden overflow-hidden bg-background relative">
           {hasActiveConversation ? (
             <main className="flex-1 h-full w-full overflow-y-auto relative bg-background pb-16">
               {children}
@@ -105,6 +107,16 @@ const WorkSpacesLayout = ({ children }: WorkSpacesProps) => {
             </div>
           )}
           <SideBar />
+
+          {/* Mobile Overlay for Thread Panel */}
+          {showPanel && (
+            <div className="absolute inset-0 z-50 bg-background w-full h-full pb-16 animate-in slide-in-from-right duration-200">
+              <ThreadPanel 
+                messageId={parentMessageId as Id<"messages">} 
+                onClose={closePanel} 
+              />
+            </div>
+          )}
         </div>
 
         {/* DESKTOP VIEW BOTH SIDEBARS AND RESIZABLE CANVAS */}
@@ -117,7 +129,7 @@ const WorkSpacesLayout = ({ children }: WorkSpacesProps) => {
             className="h-full items-stretch"
           >
             <ResizablePanel 
-              defaultSize={22} 
+              defaultSize={20} 
               minSize={250} 
               maxSize={300}
               className="h-full"
@@ -127,13 +139,25 @@ const WorkSpacesLayout = ({ children }: WorkSpacesProps) => {
 
             <ResizableHandle withHandle className="w-[1px] bg-border/40" />
 
-            <ResizablePanel defaultSize={78}>
+            <ResizablePanel defaultSize={showPanel ? 50 : 80} minSize={30}>
               <main className="h-full bg-background overflow-y-auto relative">
                 <div className="h-full w-full max-w-[1600px] mx-auto">
                   {children}
                 </div>
               </main>
             </ResizablePanel>
+
+            {showPanel && (
+              <>
+                <ResizableHandle withHandle className="w-[1px] bg-border/40" />
+                <ResizablePanel defaultSize={30} minSize={300} maxSize={250}>
+                  <ThreadPanel 
+                    messageId={parentMessageId as Id<"messages">} 
+                    onClose={closePanel} 
+                  />
+                </ResizablePanel>
+              </>
+            )}
           </ResizablePanelGroup>
         </div>
 

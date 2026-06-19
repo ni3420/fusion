@@ -5,6 +5,7 @@ import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import CreateChannelModal from "@/features/channels/components/create-channel-model";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 const geistSans = Geist({
   variable: "--font-sans",
@@ -37,7 +38,10 @@ export default function RootLayout({
           <ConvexClientProvider>
             <Toaster position="bottom-right" closeButton richColors />
             <CreateChannelModal />
+            <NuqsAdapter>
             {children}
+
+            </NuqsAdapter>
           </ConvexClientProvider>
         </body>
       </html>

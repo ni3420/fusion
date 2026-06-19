@@ -11,11 +11,13 @@
 import type * as auth from "../auth.js";
 import type * as channels from "../channels.js";
 import type * as comments from "../comments.js";
+import type * as conversations from "../conversations.js";
 import type * as http from "../http.js";
 import type * as members from "../members.js";
 import type * as messages from "../messages.js";
 import type * as reactions from "../reactions.js";
 import type * as tasks from "../tasks.js";
+import type * as thread from "../thread.js";
 import type * as upload from "../upload.js";
 import type * as users from "../users.js";
 import type * as workspaces from "../workspaces.js";
@@ -30,11 +32,13 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   channels: typeof channels;
   comments: typeof comments;
+  conversations: typeof conversations;
   http: typeof http;
   members: typeof members;
   messages: typeof messages;
   reactions: typeof reactions;
   tasks: typeof tasks;
+  thread: typeof thread;
   upload: typeof upload;
   users: typeof users;
   workspaces: typeof workspaces;
