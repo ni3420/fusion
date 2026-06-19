@@ -149,8 +149,6 @@ const handleResetInviteCode = async () => {
           </Hint>
         </div>
       </div>
-
-      {/* 1. Workspace Configuration Parameters Dialog Modal */}
       <Dialog open={preferencesOpen} onOpenChange={setPreferencesOpen}>
         <DialogContent className="max-w-3xl w-auto h-auto sm:h-auto sm:max-h-[720px] p-0 overflow-y-auto bg-white dark:bg-neutral-950 gap-0 border-neutral-200 dark:border-neutral-900 rounded-none sm:rounded-xl">
           <DialogHeader className="sr-only">
@@ -179,7 +177,6 @@ const handleResetInviteCode = async () => {
         </DialogContent>
       </Dialog>
 
-      {/* 2. FIXED: Secure Decoupled Invitation Pipeline Dialog Overlay */}
       <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
         <DialogContent className="max-w-md w-full p-0 overflow-hidden bg-transparent border-none shadow-none">
           <DialogHeader className="sr-only">

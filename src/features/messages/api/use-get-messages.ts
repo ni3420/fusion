@@ -6,6 +6,7 @@ const BATCH_SIZE = 20;
 
 interface UseGetMessagesProps {
   channelId?: Id<"channels">;
+  conversationId?: Id<"conversations">;
   parentMessageId?: Id<"messages">;
 }
 
@@ -19,10 +20,14 @@ export type useGetMessagesResult = {
   isExhausted: boolean;
 };
 
-export const useGetMessages = ({ channelId, parentMessageId }: UseGetMessagesProps): useGetMessagesResult => {
+export const useGetMessages = ({ 
+  channelId, 
+  conversationId, 
+  parentMessageId 
+}: UseGetMessagesProps): useGetMessagesResult => {
   const { results, status, loadMore } = usePaginatedQuery(
     api.messages.get,
-    { channelId, parentMessageId },
+    { channelId, conversationId, parentMessageId },
     { initialNumItems: BATCH_SIZE }
   );
 

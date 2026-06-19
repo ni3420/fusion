@@ -1,18 +1,10 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import { Loader2 } from "lucide-react";
-import { Id } from "../../../../convex/_generated/dataModel";
-import { useGetMessagesResult } from "../api/use-get-messages";
-import MessageItem from "./message-item";
-
-interface MessageFeedProps {
-  messages: useGetMessagesResult["results"];
-  status: useGetMessagesResult["status"];
-  loadMore: () => void;
-  canLoadMore: boolean;
-  currentMemberId: Id<"members">;
-}
+import { useGetWorkSpaceId } from "@/features/workspaces/hooks/use-workspace-id";
+import MessageItem from "./message-list";
+import {MessageFeedProps} from "../types"
 
 export default function MessageFeed({
   messages,
@@ -22,6 +14,7 @@ export default function MessageFeed({
   currentMemberId,
 }: MessageFeedProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const workspaceId = useGetWorkSpaceId();
 
   const handleScroll = () => {
     const container = scrollContainerRef.current;
@@ -56,7 +49,6 @@ export default function MessageFeed({
   };
 
   const groupedMessages = groupMessagesByDate([...messages].reverse());
-  console.log(groupedMessages)
 
   return (
     <div
@@ -86,6 +78,8 @@ export default function MessageFeed({
               key={message._id}
               id={message._id}
               memberId={message.memberId}
+              currentMemberId={currentMemberId}
+              workspaceId={workspaceId}
               authorName={message.member?.user?.name || "Anonymous"}
               authorImage={message.member?.user?.image}
               authorEmail={message.member?.user?.email}
@@ -94,8 +88,8 @@ export default function MessageFeed({
               gifUrl={message.gifUrl}
               createdAt={message._creationTime}
               updatedAt={message.updatedAt}
-              reactions={message.reactions}
-              threadCount={message.threadCount}
+              reactions={message.reactions || []}
+              threadCount={message.threadCount || 0}
               threadImage={message.threadImage}
               threadTimestamp={message.threadTimestamp}
               isMe={currentMemberId === message.memberId}

@@ -9,6 +9,7 @@ type RequestType = {
   image?: string;
   gifUrl?: string;
   channelId?: Id<"channels">;
+  conversationId?:Id<"conversations">
   parentMessageId?: Id<"messages">;
 };
 type ResponseType = Id<"messages"> | null;
