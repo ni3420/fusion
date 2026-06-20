@@ -24,9 +24,8 @@ export const useGetConversationId = () => {
           workspaceId,
         });
         
-        const id = typeof response === "object" ? response?._id: response;
-        if (id) {
-          setConversationId(id as Id<"conversations">);
+        if (response) {
+          setConversationId(response as Id<"conversations">);
         }
       } catch (err) {
         console.error("Failed to resolve conversation index hook:", err);
