@@ -105,14 +105,14 @@ const handleResetInviteCode = async () => {
                     <Settings className="h-4 w-4 text-neutral-400" />
                     Workspace Parameters
                   </DropdownMenuItem>
-
+{/* 
                   <DropdownMenuItem 
                     onClick={() => {}}
                     className="flex items-center gap-2.5 px-2.5 py-2 text-xs font-semibold rounded-lg text-neutral-700 dark:text-neutral-300 focus:bg-neutral-50 dark:focus:bg-neutral-800 focus:text-neutral-900 dark:focus:text-neutral-100 cursor-pointer transition-colors"
                   >
                     <Users className="h-4 w-4 text-neutral-400" />
                     Manage Collaboration Team
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
 
                   <DropdownMenuItem 
                     onClick={() => setInviteOpen(true)} // FIXED: Opens the secure dialog overlay setup instead of nesting items
@@ -128,7 +128,7 @@ const handleResetInviteCode = async () => {
         </div>
 
         <div className="flex items-center gap-1 shrink-0">
-          <Hint label="Filter tracking logs" side="bottom" align="center">
+          {/* <Hint label="Filter tracking logs" side="bottom" align="center">
             <Button
               variant="ghost"
               size="icon"
@@ -136,9 +136,9 @@ const handleResetInviteCode = async () => {
             >
               <ListFilter className="h-4 w-4" />
             </Button>
-          </Hint>
+          </Hint> */}
 
-          <Hint label="Compose new transmission" side="bottom" align="end">
+          {/* <Hint label="Compose new transmission" side="bottom" align="end">
             <Button
               variant="ghost"
               size="icon"
@@ -146,7 +146,7 @@ const handleResetInviteCode = async () => {
             >
               <SquarePen className="h-4 w-4" />
             </Button>
-          </Hint>
+          </Hint> */}
         </div>
       </div>
       <Dialog open={preferencesOpen} onOpenChange={setPreferencesOpen}>

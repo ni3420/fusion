@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
@@ -27,7 +27,7 @@ export default function MessageItem({
   authorImage,
   authorEmail,
   body,
-  image,
+  image ,
   gifUrl,
   createdAt,
   updatedAt,
@@ -39,6 +39,10 @@ export default function MessageItem({
 }: MessageItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isImageProcessing, setIsImageProcessing] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
   const { openPanel } = usePanel();
 
   const { mutate: updateMessage, isPending: isUpdating } = useUpdateMessage();
@@ -49,6 +53,41 @@ export default function MessageItem({
 
   const displayName = authorName || authorEmail || "Anonymous";
   const fallbackInitial = displayName.charAt(0).toUpperCase();
+
+  // Close mobile menus instantly if user clicks anywhere else on screen
+  useEffect(() => {
+    if (!showMobileMenu) return;
+
+    const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setShowMobileMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("touchstart", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("touchstart", handleOutsideClick);
+    };
+  }, [showMobileMenu]);
+
+  const handleTouchStart = () => {
+    if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
+
+    longPressTimerRef.current = setTimeout(() => {
+      setShowMobileMenu((prev) => !prev);
+      if (window.navigator.vibrate) {
+        window.navigator.vibrate(40);
+      }
+    }, 400); // Slightly faster long-press detection window
+  };
+
+  const handleTouchEnd = () => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+    }
+  };
 
   const handleUpdate = async ({ body: newBody }: { body: string }) => {
     try {
@@ -112,9 +151,16 @@ export default function MessageItem({
 
   return (
     <div 
+      ref={containerRef}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onClick={() => {
+        if (showMobileMenu) setShowMobileMenu(false);
+      }}
       className={cn(
         "w-full flex items-start gap-2.5 sm:gap-3 px-3 sm:px-5 py-2 group relative transition-colors duration-100 ease-out select-none md:select-text",
-        isEditing ? "bg-amber-50/40 dark:bg-amber-950/10" : "hover:bg-neutral-50/60 dark:hover:bg-neutral-900/30"
+        isEditing ? "bg-amber-50/40 dark:bg-amber-950/10" : "hover:bg-neutral-50/60 dark:hover:bg-neutral-900/30",
+        showMobileMenu && "bg-neutral-50/90 dark:bg-neutral-900/50"
       )}
     >
       <Avatar className="h-8 w-8 sm:h-9 sm:w-9 rounded-md border border-neutral-200/60 dark:border-neutral-800/60 shrink-0 mt-0.5 select-none">
@@ -158,7 +204,7 @@ export default function MessageItem({
 
         {/* Scaled Media Engine Elements */}
         {image && !isEditing && (
-          <div className="relative group/image rounded-xl overflow-hidden object-cover  border-neutral-200/80 dark:border-neutral-800/80 shadow-3xs transition-all duration-200 hover:border-neutral-300 dark:hover:border-neutral-700 max-w-[280px] sm:max-w-md w-full mt-1.5">
+          <div className="relative group/image rounded-xl overflow-hidden object-cover border-neutral-200/80 dark:border-neutral-800/80 shadow-3xs transition-all duration-200 hover:border-neutral-300 dark:hover:border-neutral-700 max-w-[280px] sm:max-w-md w-full mt-1.5">
             <ShowImage storageId={image} />
             {isMe && (
               <label className="absolute inset-0 bg-black/40 opacity-0 group-hover/image:opacity-100 transition-opacity flex items-center justify-center cursor-pointer text-white text-[11px] font-bold select-none backdrop-blur-xs">
@@ -203,7 +249,11 @@ export default function MessageItem({
         {/* Thread Component Response Box Anchor */}
         {threadCount > 0 && !isEditing && (
           <button 
-            onClick={() => openPanel(id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowMobileMenu(false);
+              openPanel(id);
+            }}
             className="mt-2.5 flex items-center gap-2 px-2.5 py-1.5 bg-neutral-50/80 dark:bg-neutral-900/40 border border-neutral-200/60 dark:border-neutral-800/60 rounded-lg group/thread text-neutral-500 dark:text-neutral-400 select-none hover:bg-white dark:hover:bg-neutral-950 transition-all duration-150 shadow-3xs hover:shadow-2xs"
           >
             <Avatar className="h-4 w-4 rounded-xs border border-neutral-200 dark:border-neutral-800 shrink-0">
@@ -223,16 +273,30 @@ export default function MessageItem({
       </div>
 
       {!isEditing && (
-        <MsgToolBar
-          isMe={isMe}
-          isRemoving={isRemoving}
-          isImageProcessing={isImageProcessing}
-          onReactionToggle={handleReactionToggle}
-          onThreadClick={() => openPanel(id)}
-          onEditClick={() => setIsEditing(true)}
-          onDeleteClick={handleDelete}
-          className="absolute right-2 sm:right-5 -top-4 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-all duration-150 ease-out z-30"
-        />
+        <div onClick={(e) => e.stopPropagation()}>
+          <MsgToolBar
+            isMe={isMe}
+            isRemoving={isRemoving}
+            isImageProcessing={isImageProcessing}
+            onReactionToggle={handleReactionToggle}
+            onThreadClick={() => {
+              setShowMobileMenu(false);
+              openPanel(id);
+            }}
+            onEditClick={() => {
+              setShowMobileMenu(false);
+              setIsEditing(true);
+            }}
+            onDeleteClick={() => {
+              setShowMobileMenu(false);
+              handleDelete();
+            }}
+            className={cn(
+              "absolute right-2 sm:right-5 -top-4 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-all duration-150 ease-out z-30",
+              showMobileMenu && "opacity-100 top-[-18px] scale-105 shadow-md"
+            )}
+          />
+        </div>
       )}
     </div>
   );

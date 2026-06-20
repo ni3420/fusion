@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 import { useGetWorkSpaceId } from "@/features/workspaces/hooks/use-workspace-id";
 import MessageItem from "./message-list";
 import {MessageFeedProps} from "../types"
+import { Id } from "../../../../convex/_generated/dataModel";
 
 export default function MessageFeed({
   messages,
@@ -84,7 +85,7 @@ export default function MessageFeed({
               authorImage={message.member?.user?.image}
               authorEmail={message.member?.user?.email}
               body={message.body}
-              image={message.image}
+              image={message.image as Id<"_storage">}
               gifUrl={message.gifUrl}
               createdAt={message._creationTime}
               updatedAt={message.updatedAt}

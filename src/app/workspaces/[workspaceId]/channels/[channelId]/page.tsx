@@ -9,12 +9,10 @@ import { useCreateMessage } from "@/features/messages/api/use-create-message";
 import { useGetWorkSpaceId } from "@/features/workspaces/hooks/use-workspace-id";
 import { useGetCurrentMembers } from "@/features/members/api/use-current-memebr";
 import { useGenerateUploadUrl } from "@/features/upload/api/use-generate-url";
-import ChannelHeader from "@/features/channels/components/channel-header";
 import MessageFeed from "@/features/messages/components/message-feed";
 import Editor, { EditorValue } from "@/components/editor";
 import { toast } from "sonner";
 import { useState } from "react";
-import { useToggleReaction } from "@/features/reactions/api/use-toggle-reaction";
 
 export default function ChannelPage() {
   const params = useParams();
@@ -24,10 +22,11 @@ export default function ChannelPage() {
 
   const { data: currentMember, isLoading: memberLoading } = useGetCurrentMembers({ workspaceId });
   const { data: channel, isLoading: channelLoading } = useGetChannel({ id: channelId });
-  const { results: messages, status, loadMore, canLoadMore } = useGetMessages({ channelId });
+  const { results: rawMessages, status, loadMore, canLoadMore } = useGetMessages({ channelId });
   const { mutate: createMessage, isPending: isSending } = useCreateMessage();
   const { mutate: generateUploadUrl } = useGenerateUploadUrl();
-  const {mutate:reaction}=useToggleReaction()
+
+  const mainChannelMessages = rawMessages?.filter((msg) => !msg.parentMessageId);
 
   const handleMessageSubmit = async ({ body, image, gifUrl }: EditorValue & { image?: File | null }) => {
     try {
@@ -99,9 +98,8 @@ export default function ChannelPage() {
 
   return (
     <div className="h-full flex-1 flex flex-col bg-white dark:bg-neutral-900">
-
       <MessageFeed
-        messages={messages}
+        messages={mainChannelMessages}
         status={status}
         loadMore={loadMore}
         canLoadMore={canLoadMore}

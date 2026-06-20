@@ -26,6 +26,7 @@ export default function ThreadPanel({ messageId, onClose }: ThreadPanelProps) {
   const { data: parentMessage, isLoading: isParentLoading } = useGetMessageById({ id: messageId });
   const { results: replies, status } = useGetMessages({ channelId, parentMessageId: messageId });
   const { mutate: createReply, isPending: isSubmitting } = useCreateThreadReply();
+  console.log("replies",replies)
 
   const handleReplySubmit = async ({ body }: { body: string }) => {
     try {
@@ -101,7 +102,7 @@ export default function ThreadPanel({ messageId, onClose }: ThreadPanelProps) {
                   authorImage={parentMessage.member?.user?.image}
                   authorEmail={parentMessage.member?.user?.email}
                   body={parentMessage.body}
-                  image={parentMessage.image}
+                  image={parentMessage.image as Id<"_storage">}
                   gifUrl={parentMessage.gifUrl}
                   createdAt={parentMessage._creationTime}
                   updatedAt={parentMessage.updatedAt}
@@ -125,7 +126,7 @@ export default function ThreadPanel({ messageId, onClose }: ThreadPanelProps) {
                   authorImage={reply.member?.user?.image}
                   authorEmail={reply.member?.user?.email}
                   body={reply.body}
-                  image={reply.image}
+                  image={reply.image as Id<"_storage">}
                   gifUrl={reply.gifUrl}
                   createdAt={reply._creationTime}
                   updatedAt={reply.updatedAt}

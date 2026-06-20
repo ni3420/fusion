@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,7 +21,7 @@ export function useConfirm({
   title,
   message,
   variant = "default",
-}: UseConfirmProps): [() => JSX.Element, () => Promise<boolean>] {
+}: UseConfirmProps): [() => React.JSX.Element, () => Promise<boolean>] {
   const [promise, setPromise] = useState<{ resolve: (value: boolean) => void } | null>(null);
 
   const confirm = () =>

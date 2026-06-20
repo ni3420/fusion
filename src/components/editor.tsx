@@ -23,8 +23,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import Placeholder from '@tiptap/extension-placeholder'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 
 const EmojiPicker = dynamic(() => import("emoji-picker-react"), { ssr: false });
 
@@ -68,8 +70,12 @@ export default function Editor({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useEditor({
-    extensions: [StarterKit],
-    placeholder,
+     extensions: [
+    StarterKit,
+    Placeholder.configure({
+      placeholder,
+    }),
+  ],
     content: defaultValue,
     immediatelyRender: false,
     editorProps: {
@@ -191,7 +197,7 @@ export default function Editor({
           {(imagePreview || gifUrl) && (
             <div className="p-3 bg-neutral-50/50 dark:bg-neutral-950/30 border-b border-neutral-100 dark:border-neutral-950 flex items-center animate-in fade-in duration-150">
               <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-background group/image shadow-3xs">
-                <img src={imagePreview || gifUrl || ""} alt="Media payload preview" className="w-full h-full object-cover transition-transform duration-200 group-hover/image:scale-105" />
+                <Image src={imagePreview || gifUrl || ""} alt="Media payload preview" className="w-full h-full object-cover transition-transform duration-200 group-hover/image:scale-105" loading="eager"/>
                 <button
                   type="button"
                   onClick={handleRemoveMedia}

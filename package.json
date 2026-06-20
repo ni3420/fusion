@@ -12,6 +12,7 @@
     "@auth/core": "0.41.1",
     "@convex-dev/auth": "^0.0.94",
     "@hookform/resolvers": "^5.4.0",
+    "@tiptap/extension-placeholder": "^3.27.1",
     "@tiptap/pm": "^3.27.0",
     "@tiptap/react": "^3.27.0",
     "@tiptap/starter-kit": "^3.27.0",

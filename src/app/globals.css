@@ -129,7 +129,7 @@
   }
 
   html {
-    @apply font-sans scroll-smooth;
+    @apply font-sans ;
   }
   
   /* Premium, ultra-thin minimal custom scrollbars */

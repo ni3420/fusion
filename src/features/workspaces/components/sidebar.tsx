@@ -6,16 +6,27 @@ import { useMemo } from "react";
 import { FiHome, FiMessageSquare, FiBell, FiGrid } from "react-icons/fi";
 import WorkSpaceSwitcher from "./workspace-switcher";
 import UserButton from "@/features/auth/components/user-button";
+import { toast } from "sonner";
 
 export default function SideBar() {
   const pathname = usePathname();
 
   const routes = useMemo(() => [
-    { icon: FiHome, label: "Home", href: "/", active: pathname === "/" },
-    { icon: FiMessageSquare, label: "DMs", href: "/dms", active: pathname.startsWith("/dms") },
-    { icon: FiBell, label: "Activity", href: "/activity", active: pathname === "/activity" },
-    { icon: FiGrid, label: "More", href: "/more", active: pathname === "/more" },
+    { icon: FiHome, label: "Home", href: "/", active: pathname === "/", implemented: true },
+    { icon: FiMessageSquare, label: "DMs", href: "/dms", active: pathname.startsWith("/dms"), implemented: false },
+    { icon: FiBell, label: "Activity", href: "/activity", active: pathname === "/activity", implemented: false },
+    { icon: FiGrid, label: "More", href: "/more", active: pathname === "/more", implemented: false },
   ], [pathname]);
+
+  const handleNavigation = (e: React.MouseEvent, route: typeof routes[0]) => {
+    if (!route.implemented) {
+      e.preventDefault();
+      toast.info(`${route.label} context framework is currently initializing under active development pipelines.`, {
+        description: "Feature matrix coming soon.",
+        duration: 3000,
+      });
+    }
+  };
 
   return (
     <>
@@ -26,7 +37,8 @@ export default function SideBar() {
             return (
               <Link 
                 key={route.href} 
-                href={route.href} 
+                href={route.href}
+                onClick={(e) => handleNavigation(e, route)}
                 className={`flex flex-col items-center justify-center flex-1 h-full gap-y-1 transition-all duration-200 ${
                   route.active
                     ? "text-neutral-950 dark:text-neutral-50"
@@ -54,7 +66,8 @@ export default function SideBar() {
             return (
               <Link 
                 key={route.href} 
-                href={route.href} 
+                href={route.href}
+                onClick={(e) => handleNavigation(e, route)}
                 className={`flex flex-col items-center justify-center flex-1 h-full gap-y-1 transition-all duration-200 ${
                   route.active
                     ? "text-neutral-950 dark:text-neutral-50"
@@ -88,7 +101,8 @@ export default function SideBar() {
               return (
                 <Link 
                   key={route.href} 
-                  href={route.href} 
+                  href={route.href}
+                  onClick={(e) => handleNavigation(e, route)}
                   className="w-full relative flex items-center justify-center group"
                 >
                   <div 
