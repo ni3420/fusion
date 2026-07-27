@@ -1,7 +1,8 @@
 # fusion
 
-> A real-time team collaboration platform built with Next.js and Convex.
+> Real-time team collaboration platform built with Next.js and Convex.
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://fusion-gilt-eight.vercel.app/)
 ![GitHub stars](https://img.shields.io/github/stars/ni3420/fusion?style=for-the-badge&logo=github) ![GitHub forks](https://img.shields.io/github/forks/ni3420/fusion?style=for-the-badge&logo=github) ![GitHub issues](https://img.shields.io/github/issues/ni3420/fusion?style=for-the-badge&logo=github) ![Last commit](https://img.shields.io/github/last-commit/ni3420/fusion?style=for-the-badge&logo=github)
 
 ## 📑 Table of Contents
@@ -21,21 +22,23 @@
 
 ## 📝 Description
 
-Fusion is a full-stack collaborative platform designed to streamline workspace management and real-time team communication. Built as a Next.js web application, it addresses the challenge of coordinating project workspaces and internal channels under a unified, responsive interface. The application automatically detects available workspaces and routes users seamlessly, providing a cohesive entry point for team operations.
+Fusion is a full-stack web application designed for team collaboration and workspace management. It addresses the challenge of organizing team operations, project workspaces, and internal messaging under a unified interface.
+
+Built on Next.js and Tailwind CSS, the application utilizes Convex for a serverless, real-time backend. Upon loading, the system automatically detects user workspaces and handles client-side routing, while managing channel creation and client state through Jotai and search parameter adapters.
 
 ## ✨ Key Features
 
-- **🏢 Dynamic Workspace Routing** — Automatically retrieves user workspaces and handles redirection to active environments upon initial client-side load.
-- **💬 Channel-Based Communication** — Enables teams to structure their communication using dedicated modals to create and manage channels.
-- **⚡ Convex Live Queries** — Utilizes a serverless Convex backend to implement real-time queries and mutations that instantly synchronize client state.
-- **🔐 Next.js Server-Side Authentication** — Secures data access and application routing using Convex's Next.js Server Auth Provider integration.
-- **🔀 State and URL Management** — Manages UI state seamlessly by combining Jotai atoms with Nuqs adapters for URL query parameters.
+- **🏢 Dynamic Workspace Routing** — Automatically retrieves user workspaces and redirects clients to active environments upon loading.
+- **⚡ Convex Live Queries** — Synchronizes client state in real time using serverless Convex queries and mutations.
+- **💬 Channel-Based Communication** — Structures team discussions using dedicated modal interfaces to create and manage channels.
+- **🔐 Server-Side Authentication** — Secures data access and routing using Convex Next.js Server Auth Provider.
+- **🔀 State and URL Management** — Manages UI modal states and search parameters using Jotai atoms and NUQS adapters.
 
 ## 🎯 Use Cases
 
-- Setting up a private, real-time workspace hub for distributed teams to organize discussions into channels.
-- Developing a secure, serverless messaging application that requires live state updates and instant database synchronization.
-- Creating multi-tenant collaboration dashboards with built-in user routing and workspace creation capabilities.
+- Organizing internal team communication across distinct workspaces and dedicated channels.
+- Building real-time web applications with live backend database synchronization using Convex.
+- Serving as a starter architecture for Next.js applications requiring workspace-based routing and server-side authentication.
 
 ## 🛠️ Tech Stack
 
@@ -315,52 +318,4 @@ Contributions are welcome! Here's the standard flow:
 5. **Push**: `git push origin feature/your-feature`
 6. **Open** a pull request
 
-Please follow the existing code style and include tests for new behavior where applicable.
-
----
-
-<div align="center">
-
-[![Made with ReadmeBuddy](https://img.shields.io/badge/Made%20with-ReadmeBuddy-8B5CFF?style=for-the-badge&logo=markdown&logoColor=white)](https://readmebuddy.com)
-
-<sub>Generate beautiful READMEs in seconds → <a href="https://readmebuddy.com">readmebuddy.com</a></sub>
-
 </div>
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-reconnect the files
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
